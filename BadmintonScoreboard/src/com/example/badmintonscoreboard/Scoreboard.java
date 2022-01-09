@@ -4,14 +4,87 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class Scoreboard extends Activity {
+    boolean inGaming = true;
+    
+    ImageView leftServiceStamp = null;
+    ImageView rightServiceStamp = null;
+    
+    int leftScoreValue = 0;
+    TextView leftScore = null;
+    TextView leftCompetitor = null;
+    
+    int rightScoreValue = 0;
+    TextView rightScore = null;
+    TextView rightCompetitor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scoreboard);
+        
+        leftServiceStamp = (ImageView) findViewById(R.id.service_stamp_left);
+        rightServiceStamp = (ImageView) findViewById(R.id.service_stamp_right);
+        
+        leftScore = (TextView) findViewById(R.id.score_left);
+        leftCompetitor = (TextView) findViewById(R.id.competitor_left);
+        leftCompetitor.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                if (!inGaming) {
+                    Toast.makeText(Scoreboard.this, "对局已结束", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                leftScoreValue++;
+                leftScore.setText(String.valueOf(leftScoreValue));
+                
+                leftServiceStamp.setVisibility(View.VISIBLE);
+                rightServiceStamp.setVisibility(View.INVISIBLE);
+                
+                if ((leftScoreValue >= 21 && leftScoreValue - rightScoreValue >= 2) || leftScoreValue == 30){
+                    inGaming = false;
+                    String toastMsg = "对局结束，" + leftCompetitor.getText() + "获胜";
+                    Toast.makeText(Scoreboard.this, toastMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        
+
+        rightScore = (TextView) findViewById(R.id.score_right);
+        rightCompetitor = (TextView) findViewById(R.id.competitor_right);
+        rightCompetitor.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                if (!inGaming) {
+                    Toast.makeText(Scoreboard.this, "对局已结束", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                rightScoreValue++;
+                rightScore.setText(String.valueOf(rightScoreValue));
+                
+                leftServiceStamp.setVisibility(View.INVISIBLE);
+                rightServiceStamp.setVisibility(View.VISIBLE);
+                
+                if ((rightScoreValue >= 21 && rightScoreValue - leftScoreValue >= 2) || rightScoreValue == 30) {
+                    inGaming = false;
+                    String toastMsg = "对局结束，" + rightCompetitor.getText() + " 获胜";
+                    Toast.makeText(Scoreboard.this, toastMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        
+        
     }
 
     @Override
