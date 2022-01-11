@@ -1,5 +1,7 @@
 package domain.competition;
 
+
+import domain.competition.Game;
 import junit.framework.TestCase;
 
 public class GameTest extends TestCase {
