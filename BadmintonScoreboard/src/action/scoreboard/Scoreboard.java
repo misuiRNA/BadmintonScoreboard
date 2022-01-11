@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.badmintonscoreboard.R;
+import com.scoreboard.R;
 
 import domain.competition.Game;
 
