@@ -5,13 +5,16 @@ import domain.competition.Game;
 import junit.framework.TestCase;
 
 public class GameTest extends TestCase {
-    String leftCompetitor = "LinDan";
-    String rightCompetitor = "LiChongWei";
+    String leftCompetitor = null;
+    String rightCompetitor = null;
     Game game = null;
     
     protected void setUp() throws Exception {
         super.setUp();
-        game = new Game(leftCompetitor, rightCompetitor);
+        game = new Game("LinDan", "LiChongWei");
+        
+        leftCompetitor = game.leftCompetiter();
+        rightCompetitor = game.rightCompetiter();
     }
 
     public void testLeftGetPoint() {

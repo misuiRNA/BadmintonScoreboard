@@ -21,6 +21,14 @@ public class Game {
         this.rightCompetitor = rightCompetitor;
     }
 
+    public String leftCompetiter() {
+        return leftCompetitor;
+    }
+
+    public String rightCompetiter() {
+        return rightCompetitor;
+    }
+
     public int rightScore() {
         return rightScore;
     }
