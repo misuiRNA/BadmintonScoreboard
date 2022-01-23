@@ -3,6 +3,6 @@
 
     <string name="app_name">羽球记分牌</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="competitor_settings">编辑选手信息</string>
 
 </resources>
