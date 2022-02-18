@@ -33,25 +33,51 @@ public class Match {
     public List<Game> gameList() {
         return gameList;
     }
+
+    public boolean shouldStartNewGame() {
+        if (gameList.size() <= 0) {
+            return true;
+        }
+        return currentGame().isOver();
+    }
     
-    public void startNewGame() {
-        gameList.add(new Game(leftCompetitor, rightCompetitor));
+    public Game startNewGame() {
+        Game game = null;
+        if (shouldStartNewGame() && !isOver()) {
+            game = new Game(leftCompetitor, rightCompetitor);
+            gameList.add(game);
+        }
+        return game;
     }
 
-    public boolean isGameOver() {
+    public boolean isOver() {
         int gameNum = gameList.size();
-        if (gameNum == 2) {
-             return (currentGame().gameOver() && gameList.get(0).service() == currentGame().service());
-        } else if (gameNum == 3) {
-            return currentGame().gameOver();
+        if (2 == gameNum) {
+             return (shouldStartNewGame() && gameList.get(0).service() == currentGame().service());
+        } else if (3 == gameNum) {
+            return shouldStartNewGame();
         } else {
             return false;
         }
     }
+
+    public void leftGetPoint() {
+        if (isOver()) {
+            return;
+        }
+        currentGame().leftGetPoint();
+    }
     
+    public void rightGetPoint() {
+        if (isOver()) {
+            return;
+        }
+        currentGame().rightGetPoint();
+    }
+
     public String winner() {
         String winner = null;
-        if (isGameOver()) {
+        if (isOver()) {
             winner = gameList.get(gameList.size() - 1).service();
         }
         return winner;

@@ -47,9 +47,9 @@ public class ScoreboardActivity extends Activity {
                 }
                 
                 if (competitorTv.getId() == R.id.competitor_left) {
-                    match.currentGame().leftGetPoint();
+                    match.leftGetPoint();
                 } else if (competitorTv.getId() == R.id.competitor_right) {
-                    match.currentGame().rightGetPoint();
+                    match.rightGetPoint();
                 } else {
                     // TODO error branch
                 }
@@ -100,10 +100,10 @@ public class ScoreboardActivity extends Activity {
             leftServiceStampImgv.setVisibility(View.INVISIBLE);
         }
 
-        if (match.isGameOver()) {
+        if (match.isOver()) {
             String toastMsg = "比赛结束, " + match.winner() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
-        } else if (game.gameOver()) {
+        } else if (match.shouldStartNewGame()) {
             String toastMsg = "本局结束, " + game.service() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
             

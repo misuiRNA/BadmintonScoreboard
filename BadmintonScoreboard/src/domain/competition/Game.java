@@ -45,7 +45,7 @@ public class Game {
         }
     }
 
-    public boolean gameOver() {
+    public boolean isOver() {
         boolean res = false;
         if (service == SERVICE_LEFT) {
             res = (leftScore >= 21 && leftScore - rightScore >= 2) || leftScore == 30;
@@ -56,7 +56,7 @@ public class Game {
     }
 
     public void leftGetPoint() {
-        if (gameOver()) {
+        if (isOver()) {
             return;
         }
         service = SERVICE_LEFT;
@@ -64,7 +64,7 @@ public class Game {
     }
     
     public void rightGetPoint() {
-        if (gameOver()) {
+        if (isOver()) {
             return;
         }
         rightScore++;

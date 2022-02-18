@@ -35,12 +35,12 @@ public class GameTest extends TestCase {
         for (int pointNum = 1; pointNum <= 20; pointNum++) {
             game.leftGetPoint();
         }
-        assertFalse(game.gameOver());
+        assertFalse(game.isOver());
         assertEquals(20, game.leftScore());
         assertEquals(0, game.rightScore());
         
         game.leftGetPoint();
-        assertTrue(game.gameOver());
+        assertTrue(game.isOver());
         assertEquals(21, game.leftScore());
         assertEquals(0, game.rightScore());
         
@@ -52,12 +52,12 @@ public class GameTest extends TestCase {
         for (int pointNum = 1; pointNum <= 20; pointNum++) {
             game.rightGetPoint();
         }
-        assertFalse(game.gameOver());
+        assertFalse(game.isOver());
         assertEquals(0, game.leftScore());
         assertEquals(20, game.rightScore());
         
         game.rightGetPoint();
-        assertTrue(game.gameOver());
+        assertTrue(game.isOver());
         assertEquals(0, game.leftScore());
         assertEquals(21, game.rightScore());
         
@@ -73,7 +73,7 @@ public class GameTest extends TestCase {
             game.rightGetPoint();
         }
         
-        assertFalse(game.gameOver());
+        assertFalse(game.isOver());
         assertEquals(20, game.leftScore());
         assertEquals(21, game.rightScore());
         
@@ -81,7 +81,7 @@ public class GameTest extends TestCase {
         game.leftGetPoint();
         game.leftGetPoint();
         
-        assertTrue(game.gameOver());
+        assertTrue(game.isOver());
         assertEquals(23, game.leftScore());
         assertEquals(21, game.rightScore());
         
@@ -97,7 +97,7 @@ public class GameTest extends TestCase {
             game.rightGetPoint();
         }
         
-        assertFalse(game.gameOver());
+        assertFalse(game.isOver());
         assertEquals(20, game.leftScore());
         assertEquals(20, game.rightScore());
         
@@ -106,12 +106,12 @@ public class GameTest extends TestCase {
             game.rightGetPoint();
         }
         
-        assertFalse(game.gameOver());
+        assertFalse(game.isOver());
         assertEquals(29, game.leftScore());
         assertEquals(29, game.rightScore());
         
         game.leftGetPoint();
-        assertTrue(game.gameOver());
+        assertTrue(game.isOver());
         assertEquals(30, game.leftScore());
         assertEquals(29, game.rightScore());
         
