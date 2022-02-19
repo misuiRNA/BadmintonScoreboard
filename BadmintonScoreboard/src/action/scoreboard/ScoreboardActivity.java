@@ -46,10 +46,11 @@ public class ScoreboardActivity extends Activity {
                     return;
                 }
                 
+                Game currentGame = match.currentGame();
                 if (competitorTv.getId() == R.id.competitor_left) {
-                    match.leftGetPoint();
+                    currentGame.serveLeft();
                 } else if (competitorTv.getId() == R.id.competitor_right) {
-                    match.rightGetPoint();
+                    currentGame.serveRight();
                 } else {
                     // TODO error branch
                 }
@@ -92,7 +93,7 @@ public class ScoreboardActivity extends Activity {
 
         ImageView leftServiceStampImgv = (ImageView) findViewById(R.id.service_stamp_left);
         ImageView rightServiceStampImgv = (ImageView) findViewById(R.id.service_stamp_right);
-        if (game.service().equals(game.leftCompetiter())) {
+        if (game.currentServe().equals(game.leftCompetiter())) {
             leftServiceStampImgv.setVisibility(View.VISIBLE);
             rightServiceStampImgv.setVisibility(View.INVISIBLE);
         } else {
@@ -103,11 +104,11 @@ public class ScoreboardActivity extends Activity {
         if (match.isOver()) {
             String toastMsg = "比赛结束, " + match.winner() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
-        } else if (match.shouldStartNewGame()) {
-            String toastMsg = "本局结束, " + game.service() + " 获胜";
+        } else if (match.currentGame().isOver()) {
+            String toastMsg = "本局结束, " + game.currentServe() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
             
-            match.startNewGame();
+            match.createNewGame();
             updateView(match);
         }
         
@@ -148,7 +149,7 @@ public class ScoreboardActivity extends Activity {
                 final String rightCompetitorName = rightEditText.getText().toString();
                 
                 Match newMatch = new Match(leftCompetitorName, rightCompetitorName);
-                newMatch.startNewGame();
+                newMatch.createNewGame();
                 ScoreboardActivity.this.match = newMatch;
 
                 updateView(match);

@@ -20,65 +20,75 @@ public class MatchTest extends TestCase{
     }
     
     public void testNoWinner_When_FirstGameOver() {
-        winGame(leftCompetitor);
+        winCurrentGame(leftCompetitor);
         assertEquals(null, match.winner());
     }
     
     public void testNoWinner_When_CompetitorsWinGameEach() {
-        winGame(leftCompetitor);
-        winGame(rightCompetitor);
+        winCurrentGame(leftCompetitor);
+        winNewGame(rightCompetitor);
+        
+        assertFalse(match.isOver());
         assertEquals(null, match.winner());
     }
 
     public void testLeftWinMatch_When_LeftWinTop2Game() {
-        winGame(leftCompetitor);
-        winGame(leftCompetitor);
+        winCurrentGame(leftCompetitor);
+        winNewGame(leftCompetitor);
+        
+        assertTrue(match.isOver());
         assertEquals(leftCompetitor, match.winner());
     }
     
     public void testLeftWinMatch_When_LeftWin_1st_and_3rd_Game() {
-        winGame(leftCompetitor);
-        winGame(rightCompetitor);
-        winGame(leftCompetitor);
+        winCurrentGame(leftCompetitor);
+        winNewGame(rightCompetitor);
+        winNewGame(leftCompetitor);
+        
+        assertTrue(match.isOver());
         assertEquals(leftCompetitor, match.winner());
     }
 
     public void testLeftWinMatch_When_LeftWin_2nd_and_3rd_Game() {
-        winGame(rightCompetitor);
-        winGame(leftCompetitor);
-        winGame(leftCompetitor);
+        winCurrentGame(rightCompetitor);
+        winNewGame(leftCompetitor);
+        winNewGame(leftCompetitor);
         assertEquals(leftCompetitor, match.winner());
     }
     
-    public void testStartNewGame_GetNullOne_When_MatchIsOver() {
-        winGame(leftCompetitor);
+    public void testStartNewGameFailed_When_MatchIsOver() {
+        winCurrentGame(leftCompetitor);
         assertFalse(match.isOver());
-        winGame(leftCompetitor);
+        winNewGame(leftCompetitor);
         assertTrue(match.isOver());
         
-        Game newGame = match.startNewGame();
-        assertNull(newGame);
+        boolean state = match.createNewGame();
+        assertFalse(state);
     }
     
-    public void testStartNewGame_GetValidOne_When_MatchIsNotOver() {
-        winGame(leftCompetitor);
+    public void testStartNewGameSuccess_When_MatchIsNotOver() {
+        winCurrentGame(leftCompetitor);
         assertFalse(match.isOver());
-        winGame(rightCompetitor);
+        winNewGame(rightCompetitor);
         assertFalse(match.isOver());
         
-        Game newGame = match.startNewGame();
-        assertNotNull(newGame);
+        boolean state = match.createNewGame();
+        assertTrue(state);
     }
     
-    private void winGame(String competitor) {
-        Game newGame = match.startNewGame();
-        assertNotNull(newGame);
-        
+    private void winNewGame(String competitor) {
+        boolean state = match.createNewGame();
+        assertTrue(state);
+        winCurrentGame(competitor);
+    }
+    
+    private void winCurrentGame(String competitor) {
+        Game newGame = match.currentGame();
         for (int loop = 0; loop < 21 && (!newGame.isOver()); ++loop) {
             if (competitor == leftCompetitor) {
-                newGame.leftGetPoint();
+                newGame.serveLeft();
             } else if (competitor == rightCompetitor) {
-                newGame.rightGetPoint();
+                newGame.serveRight();
             }
         }
     }

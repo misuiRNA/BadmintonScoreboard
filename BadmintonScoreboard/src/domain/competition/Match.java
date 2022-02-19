@@ -13,6 +13,7 @@ public class Match {
         this.leftCompetitor = leftCompetitor;
         this.rightCompetitor = rightCompetitor;
         gameList = new ArrayList<Game>();
+        gameList.add(new Game(leftCompetitor, rightCompetitor));
     }
 
     public String leftCompetiter() {
@@ -24,9 +25,6 @@ public class Match {
     }
 
     public Game currentGame() {
-        if (gameList.size() <= 0) {
-            startNewGame();
-        }
         return gameList.get(gameList.size() - 1);
     }
     
@@ -34,53 +32,36 @@ public class Match {
         return gameList;
     }
 
-    public boolean shouldStartNewGame() {
-        if (gameList.size() <= 0) {
-            return true;
+    public boolean createNewGame() {
+        boolean createState = false;
+        if (isCurrentGameOver() && !isOver()) {
+            gameList.add(new Game(leftCompetitor, rightCompetitor));
+            createState = true;
         }
-        return currentGame().isOver();
+        return createState;
     }
     
-    public Game startNewGame() {
-        Game game = null;
-        if (shouldStartNewGame() && !isOver()) {
-            game = new Game(leftCompetitor, rightCompetitor);
-            gameList.add(game);
+    public String winner() {
+        String winner = null;
+        if (isOver()) {
+            winner = gameList.get(gameList.size() - 1).currentServe();
         }
-        return game;
+        return winner;
     }
 
     public boolean isOver() {
         int gameNum = gameList.size();
         if (2 == gameNum) {
-             return (shouldStartNewGame() && gameList.get(0).service() == currentGame().service());
+             return (isCurrentGameOver() && gameList.get(0).currentServe() == currentGame().currentServe());
         } else if (3 == gameNum) {
-            return shouldStartNewGame();
+            return isCurrentGameOver();
         } else {
             return false;
         }
     }
 
-    public void leftGetPoint() {
-        if (isOver()) {
-            return;
-        }
-        currentGame().leftGetPoint();
-    }
-    
-    public void rightGetPoint() {
-        if (isOver()) {
-            return;
-        }
-        currentGame().rightGetPoint();
-    }
-
-    public String winner() {
-        String winner = null;
-        if (isOver()) {
-            winner = gameList.get(gameList.size() - 1).service();
-        }
-        return winner;
+    private boolean isCurrentGameOver() {
+        return currentGame().isOver();
     }
     
 }

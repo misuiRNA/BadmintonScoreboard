@@ -5,7 +5,7 @@ public class Game {
     static final boolean SERVICE_LEFT = false;
     static final boolean SERVICE_RIGHT = true;
     
-    private boolean service;
+    private boolean inService;
     
     private int leftScore;
     private final String leftCompetitor;
@@ -14,7 +14,7 @@ public class Game {
     private final String rightCompetitor;
 
     public Game(String leftCompetitor, String rightCompetitor) {
-        this.service = SERVICE_LEFT;    // TODO initial server by property
+        this.inService = SERVICE_LEFT;    // TODO initial server by property
         this.leftScore = 0;
         this.leftCompetitor = leftCompetitor;
         this.rightScore = 0;
@@ -37,8 +37,8 @@ public class Game {
         return leftScore;
     }
     
-    public String service() {
-        if (service == SERVICE_LEFT) {
+    public String currentServe() {
+        if (inService == SERVICE_LEFT) {
             return leftCompetitor;
         } else {
             return rightCompetitor;
@@ -47,7 +47,7 @@ public class Game {
 
     public boolean isOver() {
         boolean res = false;
-        if (service == SERVICE_LEFT) {
+        if (inService == SERVICE_LEFT) {
             res = (leftScore >= 21 && leftScore - rightScore >= 2) || leftScore == 30;
         } else {
             res = (rightScore >= 21 && rightScore - leftScore >= 2) || rightScore == 30;
@@ -55,20 +55,20 @@ public class Game {
         return res;
     }
 
-    public void leftGetPoint() {
+    public void serveLeft() {
         if (isOver()) {
             return;
         }
-        service = SERVICE_LEFT;
+        inService = SERVICE_LEFT;
         leftScore++;
     }
     
-    public void rightGetPoint() {
+    public void serveRight() {
         if (isOver()) {
             return;
         }
         rightScore++;
-        service = SERVICE_RIGHT;
+        inService = SERVICE_RIGHT;
     }
 
 }
