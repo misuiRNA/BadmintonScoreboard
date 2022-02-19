@@ -3,27 +3,28 @@ package domain.competition;
 import java.util.ArrayList;
 import java.util.List;
 
+import domain.info.Player;
+
 public class Match {
-    
-    private final String leftCompetitor;
-    private final String rightCompetitor;
+    private final Player leftPlayer;
+    private final Player rightPlayer;
     private List<Game> gameList;
 
-    public Match(String leftCompetitor, String rightCompetitor) {
-        this.leftCompetitor = leftCompetitor;
-        this.rightCompetitor = rightCompetitor;
+    public Match(Player leftPlayer, Player rightPlayer) {
+        this.leftPlayer = leftPlayer;
+        this.rightPlayer = rightPlayer;
         gameList = new ArrayList<Game>();
-        gameList.add(new Game(leftCompetitor, rightCompetitor));
+        gameList.add(new Game(leftPlayer, rightPlayer));
     }
 
-    public String leftCompetiter() {
-        return leftCompetitor;
+    public Player leftPlayer() {
+        return leftPlayer;
     }
 
-    public String rightCompetiter() {
-        return rightCompetitor;
+    public Player rightPlayer() {
+        return rightPlayer;
     }
-
+    
     public Game currentGame() {
         return gameList.get(gameList.size() - 1);
     }
@@ -35,16 +36,16 @@ public class Match {
     public boolean createNewGame() {
         boolean createState = false;
         if (isCurrentGameOver() && !isOver()) {
-            gameList.add(new Game(leftCompetitor, rightCompetitor));
+            gameList.add(new Game(leftPlayer, rightPlayer));
             createState = true;
         }
         return createState;
     }
     
-    public String winner() {
-        String winner = null;
+    public Player winner() {
+        Player winner = null;
         if (isOver()) {
-            winner = gameList.get(gameList.size() - 1).currentServe();
+            winner = currentGame().currentServe();
         }
         return winner;
     }

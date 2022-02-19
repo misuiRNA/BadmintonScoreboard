@@ -2,120 +2,114 @@ package domain.competition;
 
 
 import domain.competition.Game;
+import domain.info.Player;
 import junit.framework.TestCase;
 
 public class GameTest extends TestCase {
-    String leftCompetitor = null;
-    String rightCompetitor = null;
+    Player leftPlayer = new Player("LinDan");
+    Player rightPlayer = new Player("LiChongWei");
     Game game = null;
     
     protected void setUp() throws Exception {
         super.setUp();
-        game = new Game("LinDan", "LiChongWei");
-        
-        leftCompetitor = game.leftCompetiter();
-        rightCompetitor = game.rightCompetiter();
+        game = new Game(leftPlayer, rightPlayer);
     }
 
     public void testLeftInServe() {
-        game.serveLeft();
-        String competitor = game.currentServe();
-        assertTrue(competitor.equals(leftCompetitor));
-        assertEquals(1,  game.leftScore());
+        game.leftWinRound();
+        Player player = game.currentServe();
+        assertEquals(leftPlayer, player);
+        assertEquals(1,  game.leftCompetitor().getScore());
     }
 
     public void testRightInServe() {
-        game.serveRight();
-        String competitor = game.currentServe();
-        assertTrue(competitor.equals(rightCompetitor));
-        assertEquals(1,  game.rightScore());
+        game.rightWinRound();
+        assertEquals(rightPlayer, game.currentServe());
+        assertEquals(1,  game.rightCompetitor().getScore());
     }
     
     public void testLeftWinGameWhenFirstGet_21_and_Lead_2_More() {
-        for (int pointNum = 1; pointNum <= 20; pointNum++) {
-            game.serveLeft();
-        }
+        leftWinRounds(20);
+        
         assertFalse(game.isOver());
-        assertEquals(20, game.leftScore());
-        assertEquals(0, game.rightScore());
+        assertEquals(20, game.leftCompetitor().getScore());
+        assertEquals(0, game.rightCompetitor().getScore());
         
-        game.serveLeft();
+        game.leftWinRound();
         assertTrue(game.isOver());
-        assertEquals(21, game.leftScore());
-        assertEquals(0, game.rightScore());
+        assertEquals(21, game.leftCompetitor().getScore());
+        assertEquals(0, game.rightCompetitor().getScore());
         
-        String winner = game.currentServe();
-        assertTrue(winner.equals(leftCompetitor));
+        Player winner = game.currentServe();
+        assertEquals(leftPlayer, winner);
     }
-    
+
     public void testRightWinGameWhenFirstGet_21_and_Lead_2_More() {
-        for (int pointNum = 1; pointNum <= 20; pointNum++) {
-            game.serveRight();
-        }
+        rightWinRounds(20);
         assertFalse(game.isOver());
-        assertEquals(0, game.leftScore());
-        assertEquals(20, game.rightScore());
+        assertEquals(0, game.leftCompetitor().getScore());
+        assertEquals(20, game.rightCompetitor().getScore());
         
-        game.serveRight();
+        game.rightWinRound();
         assertTrue(game.isOver());
-        assertEquals(0, game.leftScore());
-        assertEquals(21, game.rightScore());
+        assertEquals(0, game.leftCompetitor().getScore());
+        assertEquals(21, game.rightCompetitor().getScore());
         
-        String winner = game.currentServe();
-        assertTrue(winner.equals(rightCompetitor));
+        Player winner = game.currentServe();
+        assertEquals(rightPlayer, winner);
     }
     
     public void testLeftWinGameWhenScoreSurpassed_21_and_Lead_2() {
-        for (int pointNum = 1; pointNum <= 20; pointNum++) {
-            game.serveLeft();
-        }
-        for (int pointNum = 1; pointNum <= 21; pointNum++) {
-            game.serveRight();
-        }
-        
+        leftWinRounds(20);
+        rightWinRounds(21);
         assertFalse(game.isOver());
-        assertEquals(20, game.leftScore());
-        assertEquals(21, game.rightScore());
+        assertEquals(20, game.leftCompetitor().getScore());
+        assertEquals(21, game.rightCompetitor().getScore());
         
-        game.serveLeft();
-        game.serveLeft();
-        game.serveLeft();
-        
+        leftWinRounds(3);
         assertTrue(game.isOver());
-        assertEquals(23, game.leftScore());
-        assertEquals(21, game.rightScore());
+        assertEquals(23, game.leftCompetitor().getScore());
+        assertEquals(21, game.rightCompetitor().getScore());
         
-        String winner = game.currentServe();
-        assertTrue(winner.equals(leftCompetitor));
+        Player winner = game.currentServe();
+        assertEquals(leftPlayer, winner);
     }
     
     public void testLeftWinGameWhenFirstGet_30() {
-        for (int pointNum = 1; pointNum <= 20; pointNum++) {
-            game.serveLeft();
-        }
-        for (int pointNum = 1; pointNum <= 20; pointNum++) {
-            game.serveRight();
-        }
-        
+        leftWinRounds(20);
+        rightWinRounds(20);
         assertFalse(game.isOver());
-        assertEquals(20, game.leftScore());
-        assertEquals(20, game.rightScore());
-        
+        assertEquals(20, game.leftCompetitor().getScore());
+        assertEquals(20, game.rightCompetitor().getScore());
+
         for (int pointNum = 20; pointNum < 29; pointNum++) {
-            game.serveLeft();
-            game.serveRight();
+            game.leftWinRound();
+            game.rightWinRound();
         }
         
         assertFalse(game.isOver());
-        assertEquals(29, game.leftScore());
-        assertEquals(29, game.rightScore());
+        assertEquals(29, game.leftCompetitor().getScore());
+        assertEquals(29, game.rightCompetitor().getScore());
         
-        game.serveLeft();
+        game.leftWinRound();
         assertTrue(game.isOver());
-        assertEquals(30, game.leftScore());
-        assertEquals(29, game.rightScore());
+        assertEquals(30, game.leftCompetitor().getScore());
+        assertEquals(29, game.rightCompetitor().getScore());
         
-        String winner = game.currentServe();
-        assertTrue(winner.equals(leftCompetitor));
+        Player winner = game.currentServe();
+        assertEquals(leftPlayer, winner);
     }
+
+    private void leftWinRounds(int winTime) {
+        for (int loop = 1; loop <= winTime; loop++) {
+            game.leftWinRound();
+        }
+    }
+
+    private void rightWinRounds(int winTime) {
+        for (int loop = 1; loop <= winTime; loop++) {
+            game.rightWinRound();
+        }
+    }
+    
 }

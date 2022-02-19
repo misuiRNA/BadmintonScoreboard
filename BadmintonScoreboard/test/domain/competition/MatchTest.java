@@ -1,18 +1,16 @@
 package domain.competition;
 
 import junit.framework.TestCase;
+import domain.info.Player;
 
 public class MatchTest extends TestCase{
-    String leftCompetitor = null;
-    String rightCompetitor = null;
+    Player leftPlayer = new Player("LinDan");
+    Player rightPlayer = new Player("LiChongWei");
     Match match = null;
     
     public void setUp() throws Exception {
         super.setUp();
-        match = new Match("LinDan", "LiChongWei");
-        
-        leftCompetitor = match.leftCompetiter();
-        rightCompetitor = match.rightCompetiter();
+        match = new Match(leftPlayer, rightPlayer);
     }
 
     public void testNoWinner_When_MatchStart() {
@@ -20,46 +18,46 @@ public class MatchTest extends TestCase{
     }
     
     public void testNoWinner_When_FirstGameOver() {
-        winCurrentGame(leftCompetitor);
+        winCurrentGame(leftPlayer);
         assertEquals(null, match.winner());
     }
     
     public void testNoWinner_When_CompetitorsWinGameEach() {
-        winCurrentGame(leftCompetitor);
-        winNewGame(rightCompetitor);
+        winCurrentGame(leftPlayer);
+        winNewGame(rightPlayer);
         
         assertFalse(match.isOver());
         assertEquals(null, match.winner());
     }
 
     public void testLeftWinMatch_When_LeftWinTop2Game() {
-        winCurrentGame(leftCompetitor);
-        winNewGame(leftCompetitor);
+        winCurrentGame(leftPlayer);
+        winNewGame(leftPlayer);
         
         assertTrue(match.isOver());
-        assertEquals(leftCompetitor, match.winner());
+        assertEquals(leftPlayer, match.winner());
     }
     
     public void testLeftWinMatch_When_LeftWin_1st_and_3rd_Game() {
-        winCurrentGame(leftCompetitor);
-        winNewGame(rightCompetitor);
-        winNewGame(leftCompetitor);
+        winCurrentGame(leftPlayer);
+        winNewGame(rightPlayer);
+        winNewGame(leftPlayer);
         
         assertTrue(match.isOver());
-        assertEquals(leftCompetitor, match.winner());
+        assertEquals(leftPlayer, match.winner());
     }
 
     public void testLeftWinMatch_When_LeftWin_2nd_and_3rd_Game() {
-        winCurrentGame(rightCompetitor);
-        winNewGame(leftCompetitor);
-        winNewGame(leftCompetitor);
-        assertEquals(leftCompetitor, match.winner());
+        winCurrentGame(rightPlayer);
+        winNewGame(leftPlayer);
+        winNewGame(leftPlayer);
+        assertEquals(leftPlayer, match.winner());
     }
     
     public void testStartNewGameFailed_When_MatchIsOver() {
-        winCurrentGame(leftCompetitor);
+        winCurrentGame(leftPlayer);
         assertFalse(match.isOver());
-        winNewGame(leftCompetitor);
+        winNewGame(leftPlayer);
         assertTrue(match.isOver());
         
         boolean state = match.createNewGame();
@@ -67,28 +65,28 @@ public class MatchTest extends TestCase{
     }
     
     public void testStartNewGameSuccess_When_MatchIsNotOver() {
-        winCurrentGame(leftCompetitor);
+        winCurrentGame(leftPlayer);
         assertFalse(match.isOver());
-        winNewGame(rightCompetitor);
+        winNewGame(rightPlayer);
         assertFalse(match.isOver());
         
         boolean state = match.createNewGame();
         assertTrue(state);
     }
-    
-    private void winNewGame(String competitor) {
+
+    private void winNewGame(Player player) {
         boolean state = match.createNewGame();
         assertTrue(state);
-        winCurrentGame(competitor);
+        winCurrentGame(player);
     }
-    
-    private void winCurrentGame(String competitor) {
+
+    private void winCurrentGame(Player player) {
         Game newGame = match.currentGame();
         for (int loop = 0; loop < 21 && (!newGame.isOver()); ++loop) {
-            if (competitor == leftCompetitor) {
-                newGame.serveLeft();
-            } else if (competitor == rightCompetitor) {
-                newGame.serveRight();
+            if (player == leftPlayer) {
+                newGame.leftWinRound();
+            } else if (player == rightPlayer) {
+                newGame.rightWinRound();
             }
         }
     }

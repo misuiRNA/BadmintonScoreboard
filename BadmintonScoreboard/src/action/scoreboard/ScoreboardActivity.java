@@ -21,6 +21,7 @@ import com.scoreboard.R;
 
 import domain.competition.Game;
 import domain.competition.Match;
+import domain.info.Player;
 
 
 public class ScoreboardActivity extends Activity {
@@ -48,9 +49,9 @@ public class ScoreboardActivity extends Activity {
                 
                 Game currentGame = match.currentGame();
                 if (competitorTv.getId() == R.id.competitor_left) {
-                    currentGame.serveLeft();
+                    currentGame.leftWinRound();
                 } else if (competitorTv.getId() == R.id.competitor_right) {
-                    currentGame.serveRight();
+                    currentGame.rightWinRound();
                 } else {
                     // TODO error branch
                 }
@@ -62,8 +63,8 @@ public class ScoreboardActivity extends Activity {
     private void updateView(Match match) {
         TextView leftCompetiterTexv = (TextView) findViewById(R.id.competitor_left);
         TextView rightCompetiterTexv = (TextView) findViewById(R.id.competitor_right);
-        leftCompetiterTexv.setText(match.leftCompetiter());
-        rightCompetiterTexv.setText(match.rightCompetiter());
+        leftCompetiterTexv.setText(match.leftPlayer().getName());
+        rightCompetiterTexv.setText(match.rightPlayer().getName());
 
         Map<Integer, Integer> miniSbMap = new HashMap<Integer, Integer>() { {
                 put(0x00, R.id.mini_scoreboarder_left_1);
@@ -81,19 +82,19 @@ public class ScoreboardActivity extends Activity {
             int rightMiniId = miniSbMap.get(0x10 + index);
             TextView leftMiniScoreTexv = (TextView) findViewById(leftMiniId);
             TextView rightMiniScoreTexv = (TextView) findViewById(rightMiniId);
-            leftMiniScoreTexv.setText(String.valueOf(game.leftScore()));
-            rightMiniScoreTexv.setText(String.valueOf(game.rightScore()));
+            leftMiniScoreTexv.setText(String.valueOf(game.leftCompetitor().getScore()));
+            rightMiniScoreTexv.setText(String.valueOf(game.rightCompetitor().getScore()));
         }
 
         Game game = match.currentGame();
         TextView leftScoreTexv = (TextView) findViewById(R.id.score_left);
         TextView rightScoreTexv = (TextView) findViewById(R.id.score_right);
-        rightScoreTexv.setText(String.valueOf(game.rightScore()));
-        leftScoreTexv.setText(String.valueOf(game.leftScore()));
+        rightScoreTexv.setText(String.valueOf(game.rightCompetitor().getScore()));
+        leftScoreTexv.setText(String.valueOf(game.leftCompetitor().getScore()));
 
         ImageView leftServiceStampImgv = (ImageView) findViewById(R.id.service_stamp_left);
         ImageView rightServiceStampImgv = (ImageView) findViewById(R.id.service_stamp_right);
-        if (game.currentServe().equals(game.leftCompetiter())) {
+        if (game.currentServe() == game.leftCompetitor().getPlayer()) {
             leftServiceStampImgv.setVisibility(View.VISIBLE);
             rightServiceStampImgv.setVisibility(View.INVISIBLE);
         } else {
@@ -102,10 +103,10 @@ public class ScoreboardActivity extends Activity {
         }
 
         if (match.isOver()) {
-            String toastMsg = "比赛结束, " + match.winner() + " 获胜";
+            String toastMsg = "比赛结束, " + match.winner().getName() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
         } else if (match.currentGame().isOver()) {
-            String toastMsg = "本局结束, " + game.currentServe() + " 获胜";
+            String toastMsg = "本局结束, " + game.currentServe().getName() + " 获胜";
             Toast.makeText(ScoreboardActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
             
             match.createNewGame();
@@ -143,23 +144,29 @@ public class ScoreboardActivity extends Activity {
         okBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText leftEditText = (EditText)editDialog.findViewById(R.id.competitor_edit_left);
-                final EditText rightEditText = (EditText)editDialog.findViewById(R.id.competitor_edit_right);
-                final String leftCompetitorName = leftEditText.getText().toString();
-                final String rightCompetitorName = rightEditText.getText().toString();
-                
-                Match newMatch = new Match(leftCompetitorName, rightCompetitorName);
-                newMatch.createNewGame();
-                ScoreboardActivity.this.match = newMatch;
+                final Player leftPlayer = createLeftPlayer(editDialog);
+                final Player rightPlayer = createRightPlayer(editDialog);
+                ScoreboardActivity.this.match = new Match(leftPlayer, rightPlayer);
 
                 updateView(match);
                 editDialog.hide();
-                
-                String msg = "参赛选手 设置成功！\n" + leftCompetitorName + " vs " + rightCompetitorName;
+                String msg = "参赛选手 设置成功！\n" + leftPlayer.getName() + " vs " + rightPlayer.getName();
                 Toast.makeText(ScoreboardActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
         editDialog.show();
+    }
+    
+    private Player createRightPlayer(final Dialog editDialog) {
+        final EditText rightEditText = (EditText)editDialog.findViewById(R.id.competitor_edit_right);
+        String rightPlayerName = rightEditText.getText().toString();
+        return new Player(rightPlayerName);
+    }
+
+    private Player createLeftPlayer(final Dialog editDialog) {
+        final EditText leftEditText = (EditText)editDialog.findViewById(R.id.competitor_edit_left);
+        String leftPlayerName = leftEditText.getText().toString();
+        return new Player(leftPlayerName);
     }
 
 }

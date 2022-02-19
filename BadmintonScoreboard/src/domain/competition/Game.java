@@ -1,74 +1,58 @@
 package domain.competition;
 
+import domain.info.Player;
+
 
 public class Game {
-    static final boolean SERVICE_LEFT = false;
-    static final boolean SERVICE_RIGHT = true;
+    private GameCompetitor leftCompetitor;
+    private GameCompetitor rightCompetitor;
+    private GameCompetitor inService;
     
-    private boolean inService;
-    
-    private int leftScore;
-    private final String leftCompetitor;
-    
-    private int rightScore;
-    private final String rightCompetitor;
-
-    public Game(String leftCompetitor, String rightCompetitor) {
-        this.inService = SERVICE_LEFT;    // TODO initial server by property
-        this.leftScore = 0;
-        this.leftCompetitor = leftCompetitor;
-        this.rightScore = 0;
-        this.rightCompetitor = rightCompetitor;
+    public Game(Player leftPlayer, Player rightPlayer) {
+        this.leftCompetitor = new GameCompetitor(leftPlayer);
+        this.rightCompetitor = new GameCompetitor(rightPlayer);
+        this.inService = this.leftCompetitor;    // TODO initial server by property
     }
 
-    public String leftCompetiter() {
+    public GameCompetitor leftCompetitor() {
         return leftCompetitor;
     }
 
-    public String rightCompetiter() {
+    public GameCompetitor rightCompetitor() {
         return rightCompetitor;
     }
 
-    public int rightScore() {
-        return rightScore;
-    }
-    
-    public int leftScore() {
-        return leftScore;
-    }
-    
-    public String currentServe() {
-        if (inService == SERVICE_LEFT) {
-            return leftCompetitor;
-        } else {
-            return rightCompetitor;
-        }
+    public Player currentServe() {
+        return inService.getPlayer();
     }
 
     public boolean isOver() {
-        boolean res = false;
-        if (inService == SERVICE_LEFT) {
-            res = (leftScore >= 21 && leftScore - rightScore >= 2) || leftScore == 30;
-        } else {
-            res = (rightScore >= 21 && rightScore - leftScore >= 2) || rightScore == 30;
-        }
+        GameCompetitor winner = inService; 
+        GameCompetitor loser = (leftCompetitor == winner) ? rightCompetitor : leftCompetitor;
+        
+        int winScore = winner.getScore();
+        int losScore = loser.getScore();
+        boolean res = (winScore >= 21 && winScore - losScore >= 2) || winScore == 30;
         return res;
     }
 
-    public void serveLeft() {
+    public void leftWinRound() {
         if (isOver()) {
             return;
         }
-        inService = SERVICE_LEFT;
-        leftScore++;
+        inService = leftCompetitor;
+        increaseServeScore();
     }
     
-    public void serveRight() {
+    public void rightWinRound() {
         if (isOver()) {
             return;
         }
-        rightScore++;
-        inService = SERVICE_RIGHT;
+        inService = rightCompetitor;
+        increaseServeScore();
     }
-
+    
+    private void increaseServeScore() {
+        inService.increaseScore();
+    }
 }
